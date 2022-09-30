@@ -1,3 +1,8 @@
+//This is the Register Write-Back Unit
+
+//Input : Register Address to be written,Value from Memory Unit, Value from ALU, MUX selector, clk
+//Output : Register Address to be written, Value to be written on the address
+
 module register_write(
     input wire[3:0] reg_address,
     input wire[63:0] MA_value,
@@ -23,7 +28,7 @@ assign final_value=final;
 assign reg_address_to_be_written=reg_address;
 endmodule
 
-
+//************************************************************************************************
 
 //TestBench for WriteBack Unit
 
