@@ -7,7 +7,7 @@ module pipeline(
   
   reg [8:0] cu_reg=9'b000000000;    // Register to store the values of the control signals
   
-  always @ posedge(clk) begin
+  always @ (posedge clk) begin
     cu_reg[8:0]	<= 9'b000000000;	  //Set all the bits of the control unit register to 0
     if(!opcode[3])
       cu_reg[2:0] <= opcode[2:0];	  //Conrol_signals for ALU operations and NOP
