@@ -1,19 +1,23 @@
 //This is the Actual Memory Access Unit
 
-//Input : Address in memory, Value for operation, clock, isLoad MUX selector, isMemWrite MUX selector
+//Input : Address and Value for operation, clock, isLoad MUX selector, isMemWrite MUX selector
 //Output: Value after operation from MA unit
 //Files required: Data Memory file
 
 `include "data_memory.v"
 module memory_access(
-    input wire[7:0] Address,
-    input wire[63:0] Value,
+    input wire[71:0] Address_and_Value, //From OF/EX Register
     input wire clk, //change type as per neccessity
     input wire[0:0] isLoad,
     input wire[0:0] isMemWrite,
 
     output wire[63:0] write
 );
+wire[7:0] Address;
+wire[63:0] Value;
+
+assign Address[7:0]=Address_and_Value[7:0];
+assign Value[63:0]=Address_and_Value[71:8];
 
 wire[63:0] DMoutput;
 reg[63:0] Temp_reg_for_wb_value=64'b0000000000000000000000000000000000000000000000000000000000000000;
@@ -50,7 +54,12 @@ endmodule
 //     wire[0:0] isLoad=0;
 //     wire[63:0] write;
 //     wire[0:0] isMemWrite=0;
-
+//     reg[71:0] Address_and_Value;     
+//     initial begin
+//     Address_and_Value[7:0]=Address[7:0];
+//     Address_and_Value[71:8]=Value[63:0];
+//     end
+//     
 //     memory_access MAU(
 //         .Address(Address),
 //         .Value(Value),
