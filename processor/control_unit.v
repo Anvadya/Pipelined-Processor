@@ -1,4 +1,4 @@
-module pipeline(
+module control_unit(
   input  [3:0]    opcode,    			  // First four bits of the instruction
   input            clk,             // Clock
   
