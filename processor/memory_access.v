@@ -1,6 +1,6 @@
 //This is the Actual Memory Access Unit
 
-//Input : Address and Value for operation, clock, isLoad MUX selector, isMemWrite MUX selector
+//Input : Address(7:0)[8 bits] and Value(71:8)[64 bits] for operation, clock, isLoad MUX selector, isMemWrite MUX selector
 //Output: Value after operation from MA unit
 //Files required: Data Memory file
 

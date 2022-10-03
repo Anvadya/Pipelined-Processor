@@ -1,6 +1,6 @@
 //This is the Register Write-Back Unit
 
-//Input : Register Address to be written,Value, clk
+//Input : Register Address[4 bits] and Value[next 64 bits] [68 bits total], clk
 //Output : Register Address to be written, Value to be written on the address
 
 module register_write(

@@ -1,16 +1,17 @@
 //Instruction Fetch Unit
 
 //Input: Branch_Update, isBranch , clock wire
-//Output: IF_Output consisting of Address(7:0) and Data(23:8) for 24 bit output
+//Output: IF_Output consisting of Address(7:0)[8 bits] and Data(23:8)[16 bits] for 24 bit output
 
 
 `include "instruction_memory.v"
 module instruction_fetch(
-    input wire[7:0] Branch_Update,  //Input received from Execution Unit
+    input wire[7:0] Branch_Update,  //Input received from Execution Unit [Main Wire for Input]
+
     input wire is_Branch,  //Input received from Control Unit
     input wire clk,     //Clock wire
 
-    output wire[23:0] IF_output
+    output wire[23:0] IF_output //Main Output Wire
 );
     wire[7:0] Address_Bus;
     wire[15:0] Data_Bus;
