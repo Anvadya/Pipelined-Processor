@@ -1,4 +1,4 @@
-module pipeline(
+module Execution_unit(
   input [7:0] PC,
   input [2:0] control_signals_in,
   input [63:0] op1,op2,
