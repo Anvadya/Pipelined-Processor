@@ -1,3 +1,9 @@
+//Instruction Fetch Unit
+
+//Input: Branch_Update, isBranch , clock wire
+//Output: IF_Output consisting of Address(7:0) and Data(23:8) for 24 bit output
+
+
 `include "instruction_memory.v"
 module instruction_fetch(
     input wire[7:0] Branch_Update,  //Input received from Execution Unit
