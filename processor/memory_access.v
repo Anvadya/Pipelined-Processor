@@ -6,22 +6,24 @@
 
 `include "data_memory.v"
 module memory_access(
-    input wire[71:0] Address_and_Value, //From OF/EX Register
-    input wire clk, //change type as per neccessity
-    input wire[0:0] isLoad,
-    input wire[0:0] isMemWrite,
+    input wire[79:0] Address_and_Value_with_ControlRod, //From OF/EX Register
+
+    input wire clk, //Clock Wire
 
     output wire[63:0] write
 );
 wire[7:0] Address;
 wire[63:0] Value;
+wire[0:0] isLoad;
+wire[0:0] isMemWrite;
 
-assign Address[7:0]=Address_and_Value[7:0];
-assign Value[63:0]=Address_and_Value[71:8];
+assign Address[7:0]=Address_and_Value_with_ControlRod[7:0];
+assign Value[63:0]=Address_and_Value_with_ControlRod[71:8];
+assign isLoad[0:0]=Address_and_Value_with_ControlRod[76:76];
+assign isMemWrite[0:0]=Address_and_Value_with_ControlRod[77:77];
 
 wire[63:0] DMoutput;
 reg[63:0] Temp_reg_for_wb_value=64'b0000000000000000000000000000000000000000000000000000000000000000;
-//no need to initialize, remove later after setting clock (default value will be x)
 
 data_memory DM(.memaddress(Address),.inputdata(Value),.ismemwrite(isMemWrite),.outputdata(DMoutput));
 
