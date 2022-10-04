@@ -6,38 +6,41 @@
 
 `include "instruction_memory.v"
 module instruction_fetch(
-    input wire[7:0] Branch_Update,  //Input received from Execution Unit [Main Wire for Input]
+    input wire[15:0] Branch_Update_with_ControlRod,  //Input received from Execution Unit [Main Wire for Input] with Control Rod
 
-    input wire is_Branch,  //Input received from Control Unit
     input wire clk,     //Clock wire
 
     output wire[23:0] IF_output //Main Output Wire
 );
     wire[7:0] Address_Bus;
     wire[15:0] Data_Bus;
+    wire[0:0] is_Branch;
     reg[7:0] Program_Counter;
     reg[7:0] Plus_4;
     
     initial Program_Counter=8'd0;
     initial Plus_4=8'd1;    //Add according to convention of Assembler
     
+    assign is_Branch[0:0]=Branch_Update_with_ControlRod[11:11];
+
     always @(posedge clk) begin
         if(is_Branch) begin
-            Program_Counter<=Branch_Update;
+            Program_Counter<=Branch_Update_with_ControlRod[7:0];
         end
         else begin
             Program_Counter<=Program_Counter+Plus_4;
         end
     end
-        assign Address_Bus=Program_Counter;
+    
+    assign Address_Bus=Program_Counter;
 
-        instruction_memory IM(
-            .pc(Address_Bus),
-            .instruction(Data_Bus)
-        );
+    instruction_memory IM(
+        .pc(Address_Bus),
+        .instruction(Data_Bus)
+    );
 
-        assign IF_output[7:0]=Address_Bus[7:0];
-        assign IF_output[23:8]=Data_Bus[15:0];
+    assign IF_output[7:0]=Address_Bus[7:0];
+    assign IF_output[23:8]=Data_Bus[15:0];
 
 endmodule
 
