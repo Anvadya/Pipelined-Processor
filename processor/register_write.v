@@ -4,11 +4,13 @@
 //Output : Register Address to be written, Value to be written on the address
 
 module register_write(
-    input wire[67:0] reg_address_and_Value,
+    input wire[75:0] reg_address_and_Value_with_Control_Rod,
     input wire clk,
 
     output wire final_reg_address_and_Value
 );
+
+register_file rf();
 
 always @(posedge clk) begin
     final_reg_address_and_Value<=reg_address_and_Value;
