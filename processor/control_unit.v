@@ -5,10 +5,10 @@ module control_unit(
   output [7:0]  control_rod         // Set of all control signals 
 );
   
-  reg [7:0] cu_reg=8'b000000000;    // Register to store the values of the control signals
+  reg [7:0] cu_reg=8'b00000000;    // Register to store the values of the control signals
   
   always @ (posedge clk) begin
-    cu_reg[7:0]	<= 8'b000000000;	  //Set all the bits of the control unit register to 0
+    cu_reg[7:0]	<= 8'b00000000;	  //Set all the bits of the control unit register to 0
     if(!opcode[3])
       cu_reg[2:0] <= opcode[2:0];	  //Conrol_signals for ALU operations and NOP
     else if(opcode[0]&opcode[1]) begin		//Control Signals for BEQ and JMP
@@ -25,23 +25,23 @@ module control_unit(
 endmodule
 
 
-OPCODES:
-NOP : 0000
-ADD : 0001
-MUL : 0010
-XOR : 0100
-INC : 0011
-CMP : 0110
-BEQ : 1011
-JMP : 1111
-LD  : 1101
-ST  : 1010
-RES : 1100
+// OPCODES:
+// NOP : 0000
+// ADD : 0001
+// MUL : 0010
+// XOR : 0100
+// INC : 0011
+// CMP : 0110
+// BEQ : 1011
+// JMP : 1111
+// LD  : 1101
+// ST  : 1010
+// RES : 1100
 
-Control Rod (Bits):
-0-2 for ALU
-3 for BEQ
-4 for ReadMem
-5 for MemWrite
-6 for RegWrite
-7 for JMP
+// Control Rod (Bits):
+// 0-2 for ALU
+// 3 for BEQ
+// 4 for ReadMem
+// 5 for MemWrite
+// 6 for RegWrite
+// 7 for JMP
