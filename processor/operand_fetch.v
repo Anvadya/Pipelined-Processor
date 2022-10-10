@@ -6,8 +6,6 @@ module operand_fetch(
     input wire [15:0] instruction,  // Instruction from instruction memory
     input wire [3:0] write_port_address,
     input wire [63:0] write_data,
-    input wire [0:0] is_write,
-    input wire [0:0] is_math,
     input wire clk,
 
     output wire [7:0] control_rod,
@@ -26,11 +24,11 @@ wire [0:0] Flag;
 reg [3:0] register_to_be_written;
 
 control_unit cu (instruction[3:0], clk, Control_rod);
-register_file reg_file (instruction[7:4], instruction[11:8], write_port_address, write_data, is_write, clk, reg1_data, reg2_data, Flag);
+register_file reg_file (instruction[7:4], instruction[11:8], write_port_address, write_data, Control_rod[6], clk, reg1_data, reg2_data, Flag);
 
 always @(posedge clk) begin
     register_to_be_written = instruction[7:4];
-    if (is_math) begin
+    if (Control_rod[0]|Control_rod[1]|Control_rod[2]) begin
         register_to_be_written = instruction[15:12];
     end
 end
