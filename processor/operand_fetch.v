@@ -5,7 +5,7 @@ module operand_fetch(
     // input wire [3:0] pc,            // Program Counter
     // input wire [15:0] instruction,  // Instruction from instruction memory
     // input wire [3:0] write_port_address,
-    input wire [23:0] IF_output;       
+    input wire [23:0] IF_output,       
     // input wire [63:0] write_data,
     input wire clk,
 
@@ -16,7 +16,7 @@ module operand_fetch(
     // output wire        flag,
     // output wire [7:0] address,
     // output wire [3:0] reg_to_be_written
-    output wire [156:0] OF_output,      // control_rod (8 bit), PC(8 bit), reg1_data(64 bit), reg2_data(64 bit), flag(1 bit), address(8 bit), reg_write_address(4 bit)
+    output wire [156:0] OF_output      // control_rod (8 bit), PC(8 bit), reg1_data(64 bit), reg2_data(64 bit), flag(1 bit), address(8 bit), reg_write_address(4 bit)
 );
 
 wire [7:0] Control_rod;
@@ -59,12 +59,12 @@ end
 // assign address = instruction[23:16];
 // assign reg_to_be_written = register_to_be_written;
 
-OF_output[7:0] = Control_rod;
-OF_output[15:8] = IF_output[7:0];
-OF_output[79:16] = reg1_data;
-OF_output[143:80] = reg2_data;
-OF_output[144] = flag;
-OF_output[152:145] = IF_output[23:16];
-OF_output[156:153] = register_to_be_written;
+assign OF_output[7:0] = Control_rod;
+assign OF_output[15:8] = IF_output[7:0];
+assign OF_output[79:16] = reg1_data;
+assign OF_output[143:80] = reg2_data;
+assign OF_output[144] = Flag;
+assign OF_output[152:145] = IF_output[23:16];
+assign OF_output[156:153] = register_to_be_written;
 
 endmodule
