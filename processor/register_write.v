@@ -6,6 +6,8 @@
 module register_write(
     input wire[75:0] reg_address_and_Value_with_Control_Rod,
     input wire clk,
+
+    output wire final_reg_address_and_Value
 );
 
 register_file rf();
