@@ -1,12 +1,12 @@
 //Instruction Fetch Unit
 
-//Input: Branch_Update, isBranch , clock wire
+//Input: Branch_Update[first 8 bits], isBranch[last 1 bit] , clock wire
 //Output: IF_Output consisting of Address(7:0)[8 bits] and Data(23:8)[16 bits] for 24 bit output
 
 
 `include "instruction_memory.v"
 module instruction_fetch(
-    input wire[15:0] Branch_Update_with_ControlRod,  //Input received from Execution Unit [Main Wire for Input] with Control Rod
+    input wire[8:0] Branch_Update_with_isBranch,  //Input received from Execution Unit [Main Wire for Input]
 
     input wire clk,     //Clock wire
 
@@ -19,13 +19,13 @@ module instruction_fetch(
     reg[7:0] Plus_4;
     
     initial Program_Counter=8'd0;
-    initial Plus_4=8'd1;    //Add according to convention of Assembler
+    initial Plus_4=8'd1;
     
-    assign is_Branch[0:0]=Branch_Update_with_ControlRod[11:11];
+    assign is_Branch[0:0]=Branch_Update_with_isBranch[8:8];
 
     always @(posedge clk) begin
-        if(is_Branch) begin
-            Program_Counter<=Branch_Update_with_ControlRod[7:0];
+        if(is_Branch[0:0]) begin
+            Program_Counter<=Branch_Update_with_isBranch[7:0];
         end
         else begin
             Program_Counter<=Program_Counter+Plus_4;
@@ -52,17 +52,15 @@ endmodule
 // `include "instruction_fetch.v"
 
 
-// module IF_tb();
-//     reg[7:0] Branch_Update;
-//     reg is_Branch;
+// module if_tb();
+//     reg[8:0] Branch_Update_with_isBranch;
 //     wire[15:0] Data_Bus;
 //     wire[7:0] Address_Bus;
 //     wire[23:0] IF_output;
 //     reg clk=0;
 
-//     InstructionFetch InFt(
-//         .Branch_Update(Branch_Update),
-//         .is_Branch(is_Branch),
+//     instruction_fetch InFt(
+//         .Branch_Update_with_isBranch(Branch_Update_with_isBranch),
 //         .clk(clk),
 //         .IF_output(IF_output)
 //         );
@@ -71,36 +69,28 @@ endmodule
 //     assign Data_Bus[15:0]=IF_output[23:8];
 
 //     initial begin
-//         $dumpfile("IF_tb.vcd");
-//         $dumpvars(0,IF_tb);
+//         $dumpfile("if_tb.vcd");
+//         $dumpvars(0,if_tb);
 //         clk=0;
-//         is_Branch=0;
-//         Branch_Update=4;
+//         Branch_Update_with_isBranch=9'b000000000;
 //         #10;
 //         clk=1;
 //         #10;
 //         clk=0;
-//         is_Branch=1;
+//         Branch_Update_with_isBranch=9'b100000100;
 //         #10;
 //         clk=1;
 //         #10;
-//         is_Branch=0;
+        
 //         clk=0;
 //         #10;
 //         clk=1;
 //     end
+
 // endmodule
 
 
 //******************************************************************************************************************************
 //InstructionMemory.txt for test case
 
-// 0000000000001111
-// 0000000011110000
-// 0000111100001111
-// 0000000011111111
-// 0000111100000000
-// 0000000000000111
-// 0000000000001110
-// 0111000011110001
-// 0000111100001011
+// 010100000001001001010000010100100101000000010110010100000001001101010000000111110101000000010011

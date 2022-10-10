@@ -1,21 +1,68 @@
 //This is the Register Write-Back Unit
 
-//Input : Register Address[4 bits] and Value[next 64 bits] [68 bits total], clk
-//Output : Register Address to be written, Value to be written on the address
+//Input : Register Address[4 bits], Value[next 64 bits], is_write[next 1 bit] {total 69 bits}, clk
+//Child Module: Register File
 
+`include "register_file.v"
 module register_write(
-    input wire[75:0] reg_address_and_Value_with_Control_Rod,
-    input wire clk,
-
-    output wire final_reg_address_and_Value
+    input wire[68:0] reg_address_and_Value_with_is_write,
+    input wire clk
 );
+wire[3:0] reg_address;
+wire[63:0] value;
+wire[0:0] is_write;
 
-register_file rf();
+assign reg_address[3:0]=reg_address_and_Value_with_is_write[3:0];
+assign value[63:0]=reg_address_and_Value_with_is_write[67:4];
+assign is_write[0:0]=reg_address_and_Value_with_is_write[68:68];
 
-always @(posedge clk) begin
-    final_reg_address_and_Value<=reg_address_and_Value;
-end
+register_file rf(.clk(clk),.write_data(value),.is_write(is_write),.write_port_address(reg_address));
 
 endmodule
 
-//May need changes after discussion
+//This is the Test bench for WriteBack
+
+// `include "register_write.v"
+// module rw_tb();
+
+// reg[3:0] reg_address;
+// reg[63:0] value;
+// reg[0:0] is_write;
+// reg clk=0;
+
+// wire[68:0] reg_address_and_Value_with_is_write;
+
+// assign reg_address_and_Value_with_is_write[3:0]=reg_address[3:0];
+// assign reg_address_and_Value_with_is_write[67:4]=value[63:0];
+// assign reg_address_and_Value_with_is_write[68:68]=is_write[0:0];
+
+// register_write rl(.reg_address_and_Value_with_is_write(reg_address_and_Value_with_is_write),.clk(clk));
+
+// initial begin
+
+//     $dumpfile("rw_tb.vcd");
+//     $dumpvars(0,rw_tb);
+
+//     reg_address=4'd6;
+//     value=64'd50;
+//     is_write=1'b1;
+//     clk=0;
+//     #10;
+//     clk=1;
+//     #10;
+//     clk=0;
+//     is_write=1'b1;
+//     #10;
+//     clk=1;
+//     is_write=1'b0;
+//     value=64'd25;
+//     #10;
+//     clk=0;
+//     reg_address=4'd3;
+//     #10;
+//     clk=1;
+//     #10;
+//     clk=0;
+// end
+
+// endmodule
