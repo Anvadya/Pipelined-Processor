@@ -1,6 +1,6 @@
 //This is the Register Write-Back Unit
 
-//Input : Register Address[4 bits], Value[next 64 bits], is_write[next 1 bit] {total 69 bits}, clk
+//Input : Value[64 bits],Register Address[next 4 bits], is_write[next 1 bit] {total 69 bits}, clk
 //Child Module: Register File
 
 `include "register_file.v"
@@ -12,8 +12,8 @@ wire[3:0] reg_address;
 wire[63:0] value;
 wire[0:0] is_write;
 
-assign reg_address[3:0]=reg_address_and_Value_with_is_write[3:0];
-assign value[63:0]=reg_address_and_Value_with_is_write[67:4];
+assign reg_address[3:0]=reg_address_and_Value_with_is_write[67:64];
+assign value[63:0]=reg_address_and_Value_with_is_write[63:0];
 assign is_write[0:0]=reg_address_and_Value_with_is_write[68:68];
 
 register_file rf(.clk(clk),.write_data(value),.is_write(is_write),.write_port_address(reg_address));
@@ -32,8 +32,8 @@ endmodule
 
 // wire[68:0] reg_address_and_Value_with_is_write;
 
-// assign reg_address_and_Value_with_is_write[3:0]=reg_address[3:0];
-// assign reg_address_and_Value_with_is_write[67:4]=value[63:0];
+// assign reg_address_and_Value_with_is_write[67:64]=reg_address[3:0];
+// assign reg_address_and_Value_with_is_write[63:0]=value[63:0];
 // assign reg_address_and_Value_with_is_write[68:68]=is_write[0:0];
 
 // register_write rl(.reg_address_and_Value_with_is_write(reg_address_and_Value_with_is_write),.clk(clk));
