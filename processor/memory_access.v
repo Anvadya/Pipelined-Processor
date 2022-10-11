@@ -32,14 +32,15 @@ assign isMemWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[77:77]
 assign isWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[78:78]; // 1 bit
 
 wire[63:0] DMoutput;
-reg[63:0] Temp_reg_for_wb_value=64'b0000000000000000000000000000000000000000000000000000000000000000;
+reg[63:0] Temp_reg_for_wb_value;
 
 data_memory DM(.memaddress(Address),.inputdata(Value),.ismemwrite(isMemWrite),.outputdata(DMoutput));
 
 always @(posedge clk) begin
     if(isLoad[0:0]) begin
         Temp_reg_for_wb_value<=DMoutput;
-    end else begin
+    end 
+    else begin
         Temp_reg_for_wb_value<=Value;
     end
 end
