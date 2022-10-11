@@ -10,7 +10,7 @@ module control_unit(
   always @ (*) begin
     cu_reg[7:0]	<= 8'b00000000;	  //Set all the bits of the control unit register to 0
     if(!opcode[3]) begin                   //bit no. 3 of the opcode is 0 for the operations which need to be performed by the ALU else it is 1
-      cu_reg[2:0] <= opcode[2:0];	  //Conrol_signals for ALU operations and NOP (other than the bit no. 3, rest others are the same as the corresponding bits of the opcode)
+      cu_reg[2:0] <= opcode[2:0];	  //Conrol_signals for ALU operations(other than the bit no. 3, rest others are the same as the corresponding bits of the opcode)
       cu_reg[6]<=1'b1;
     end else if(opcode[0]&opcode[1]) begin		//Control Signals for BEQ and JMP (both the bits 0 and 1 in the opcode are 1 in case of jump and beq)
       if(opcode[2])                         // bit no. 2 of the opcode is 1 for jump instruction
@@ -23,7 +23,7 @@ module control_unit(
 
 
     // Refer to the opcode table:
-    // NOP : 0000
+    // NOP : 1000
     // ADD : 0001
     // MUL : 0010
     // XOR : 0100
@@ -59,7 +59,7 @@ endmodule
 // endmodule
 
 // OPCODES:
-// NOP : 0000
+// NOP : 1000
 // ADD : 0001
 // MUL : 0010
 // XOR : 0100
