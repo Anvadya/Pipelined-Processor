@@ -41,7 +41,7 @@ assign write_data_wire = write_data;
 assign write_port_address_wire = write_port_address;
 assign is_write_wire = is_write;
 
-control_unit cu (IF_output[11:8], clk, Control_rod);
+control_unit cu (IF_output[11:8], Control_rod);
 register_file reg_file (IF_output[15:12], IF_output[19:16], write_port_address_wire, write_data_wire, is_write_wire, clk, reg1_data, reg2_data, Flag);
 
 always @(posedge clk) begin
