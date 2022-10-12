@@ -32,7 +32,7 @@ memory_access ma(
     .write(reg_address_and_Value_with_is_write)
 );
 
-reg[68:0] MaRw;
+reg[68:0] MaRw; // MA/WB Register
 
 always @(*) begin
 MaRw<=reg_address_and_Value_with_is_write;
