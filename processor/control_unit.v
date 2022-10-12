@@ -18,8 +18,10 @@ module control_unit(
     end else if(opcode[0]&opcode[1]) begin		//Control Signals for BEQ and JMP (both the bits 0 and 1 in the opcode are 1 in case of jump and beq)
       if(opcode[2])                         // bit no. 2 of the opcode is 1 for jump instruction
         cu_reg[7]<=1'b1;
-      else                                  // bit no. 2 of the opcode is 0 for beq instruction
+      else begin                               // bit no. 2 of the opcode is 0 for beq instruction
         cu_reg[3]<=1'b1;
+        cu_reg[9]<=1'b1;
+      end
     end else begin								//Control Signals for LD, ST and RES (bit no. 0 of the opcode is 1 and the bit no. 1 is 0 for these operations)
       cu_reg[6:4] <= opcode[2:0];           //The bits from 5 to 8 of the control rod are the same as the bits from 0 to 2 of the opcodes
       if(opcode[1]) 
@@ -84,5 +86,5 @@ endmodule
 // 5 for IsMemWrite
 // 6 for IsRegWrite
 // 7 for JMP
-// 8 for ReadReg(9-13)
+// 8 for ReadReg(9-12)
 // 9 for ReadReg(5-8)
