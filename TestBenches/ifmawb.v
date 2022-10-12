@@ -1,15 +1,26 @@
-//This is the TestBench for Integrating MA and WB units
-//Required Modules: memory_access.v,register_write.v,data_memory.v,register_file.v
-//Other required modules: Data_Memory.txt
+//This is the TestBench for Integrating IF, MA and WB units
+//Required Modules: memory_access.v,register_write.v,data_memory.v,register_file.v,instruction_fetch.v,instruction_memory.v
+//Other required files: Data_Memory.txt,Instruction_Memory.txt
 
 `include "register_write.v"
 `include "memory_access.v"
+`include "instruction_fetch.v"
 
-module mawb();
+module ifmawb();
 
 wire[78:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite;
 wire[68:0] reg_address_and_Value_with_is_write;
+wire[23:0] IF_Output;
+
 reg clk=0;
+
+wire[8:0] Branch_Update_with_isBranch;
+
+reg[7:0] Branch_Update;
+reg[0:0] is_Branch;
+
+assign Branch_Update_with_isBranch[7:0]=Branch_Update[7:0];
+assign Branch_Update_with_isBranch[8:8]=is_Branch[0:0];
 
 reg[7:0] Address;
 reg[63:0] Value;
@@ -26,6 +37,13 @@ assign Address_Value_RegAddress_isLoad_isMemWrite_isWrite[75:72]=reg_address[3:0
 assign Address_Value_RegAddress_isLoad_isMemWrite_isWrite[76:76]=isLoad[0:0];
 assign Address_Value_RegAddress_isLoad_isMemWrite_isWrite[77:77]=isMemWrite[0:0];
 assign Address_Value_RegAddress_isLoad_isMemWrite_isWrite[78:78]=isWrite[0:0];
+
+
+instruction_fetch inf(
+    .clk(clk),
+    .Branch_Update_with_isBranch(Branch_Update_with_isBranch),
+    .IF_output(IF_Output)
+);
 
 memory_access ma(
     .clk(clk),
@@ -45,15 +63,17 @@ register_write rw(
 );
 
 initial begin
-    $dumpfile("mawb.vcd");
-    $dumpvars(0,mawb);
+    $dumpfile("ifmawb.vcd");
+    $dumpvars(0,ifmawb);
     clk=0;
+    Branch_Update=8'b00000111;
     Address=8'b00010001;
     Value=64'd5;
     reg_address=4'b0110;
     isLoad=1'b0;
     isMemWrite=1'b0;
     isWrite=1'b1;
+    is_Branch=1'b0;
     #10;
     clk=1;
     #10;

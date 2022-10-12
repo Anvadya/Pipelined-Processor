@@ -1,7 +1,6 @@
 //This is the Actual Memory Access Unit
 
-//Input : Address(7:0)[8 bits] and Value(71:8)[64 bits] for operation, isLoad MUX selector[next 1 bit], 
-//        isMemWrite MUX selector[next 1 bit] and Reg to be written[last 4 bits]
+//Input : Address(7:0)[8 bits] and Value(71:8)[64 bits] ,RegAddressTobeWritten[4 bits], isLoad,isMemWrite,isWrite[next 3 bits] 
 //Output: Value after operation from MA unit[64 bits] and RegAddresstoBeWritten [next 4 bits]
 
 //Files required: Data Memory file
