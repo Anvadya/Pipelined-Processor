@@ -14,24 +14,27 @@ module instruction_fetch(
 );
     wire[7:0] Address_Bus;
     wire[15:0] Data_Bus;
-    wire[0:0] is_Branch;
+    reg[0:0] is_Branch;
     reg[7:0] Program_Counter;
     reg[7:0] Plus_4;
-    
+
     initial Program_Counter=8'd0;
     initial Plus_4=8'd1;
     
-    assign is_Branch[0:0]=Branch_Update_with_isBranch[8:8];
+    always @(*) begin
+    is_Branch[0:0]<=Branch_Update_with_isBranch[8:8];
+    end
 
     always @(posedge clk) begin
         if(is_Branch[0:0]) begin
             Program_Counter<=Branch_Update_with_isBranch[7:0];
+            is_Branch <= 0;
         end
         else begin
             Program_Counter<=Program_Counter+Plus_4;
         end
     end
-    
+
     assign Address_Bus=Program_Counter;
 
     instruction_memory IM(
@@ -43,7 +46,7 @@ module instruction_fetch(
     assign IF_output[23:8]=Data_Bus[15:0];
 
 endmodule
-
+// 000100010010001111111111
 //*****************************************************************************************************************************************
 
 //Instruction Fetch TestBench
