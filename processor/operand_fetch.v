@@ -41,7 +41,7 @@ register_file reg_file (IF_output[15:12], IF_output[19:16], write_port_address_w
 // MUX for the selection of write-back address
 always @(posedge clk) begin
     register_to_be_written = IF_output[15:12];
-    if (Control_rod[0]|Control_rod[1]|Control_rod[2]) begin
+    if ((Control_rod[0]|Control_rod[1]|Control_rod[2])&&!(Control_rod == 10'b1001000011)) begin
         register_to_be_written = IF_output[23:20];
     end
 end
