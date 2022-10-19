@@ -1,0 +1,146 @@
+#! /opt/homebrew/Cellar/icarus-verilog/11.0/bin/vvp
+:ivl_version "11.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/11.0/lib/ivl/system.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/11.0/lib/ivl/vhdl_sys.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/11.0/lib/ivl/vhdl_textio.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/11.0/lib/ivl/v2005_math.vpi";
+:vpi_module "/opt/homebrew/Cellar/icarus-verilog/11.0/lib/ivl/va_math.vpi";
+S_0x12570ebe0 .scope module, "instruction_fetch" "instruction_fetch" 2 8;
+ .timescale 0 0;
+    .port_info 0 /INPUT 9 "Branch_Update_with_isBranch";
+    .port_info 1 /INPUT 1 "clk";
+    .port_info 2 /OUTPUT 24 "IF_output";
+L_0x125722870 .functor BUFZ 8, v0x125722280_0, C4<00000000>, C4<00000000>, C4<00000000>;
+L_0x125722a50 .functor BUFZ 16, v0x125721dc0_0, C4<0000000000000000>, C4<0000000000000000>, C4<0000000000000000>;
+v0x125721ee0_0 .net "Address_Bus", 7 0, v0x125722280_0;  1 drivers
+o0x1080201f0 .functor BUFZ 9, C4<zzzzzzzzz>; HiZ drive
+v0x125721f70_0 .net "Branch_Update_with_isBranch", 8 0, o0x1080201f0;  0 drivers
+v0x125722020_0 .net "Data_Bus", 15 0, v0x125721dc0_0;  1 drivers
+v0x1257220f0_0 .net "IF_output", 23 0, L_0x125722950;  1 drivers
+v0x125722190_0 .var "Plus_4", 7 0;
+v0x125722280_0 .var "Program_Counter", 7 0;
+v0x125722330_0 .net *"_ivl_12", 15 0, L_0x125722a50;  1 drivers
+v0x1257223e0_0 .net *"_ivl_7", 7 0, L_0x125722870;  1 drivers
+o0x108020310 .functor BUFZ 1, C4<z>; HiZ drive
+v0x125722490_0 .net "clk", 0 0, o0x108020310;  0 drivers
+v0x1257225a0_0 .net "is_Branch", 0 0, L_0x125722690;  1 drivers
+E_0x125706860 .event posedge, v0x125722490_0;
+L_0x125722690 .part o0x1080201f0, 8, 1;
+L_0x125722950 .concat8 [ 8 16 0 0], L_0x125722870, L_0x125722a50;
+S_0x125704fa0 .scope module, "IM" "instruction_memory" 2 37, 3 9 0, S_0x12570ebe0;
+ .timescale 0 0;
+    .port_info 0 /INPUT 8 "pc";
+    .port_info 1 /OUTPUT 16 "instruction";
+v0x125721ae0_0 .var "character", 7 0;
+v0x125721ba0_0 .var/i "fd", 31 0;
+v0x125721c50_0 .net "instruction", 15 0, v0x125721dc0_0;  alias, 1 drivers
+o0x108020100 .functor BUFZ 8, C4<zzzzzzzz>; HiZ drive
+v0x125721d10_0 .net "pc", 7 0, o0x108020100;  0 drivers
+v0x125721dc0_0 .var "temp", 15 0;
+E_0x125710f10 .event edge, v0x125721d10_0, v0x125721ba0_0, v0x125721ae0_0;
+S_0x125705110 .scope begin, "$ivl_for_loop0" "$ivl_for_loop0" 3 20, 3 20 0, S_0x125704fa0;
+ .timescale 0 0;
+v0x125721a20_0 .var/i "i", 31 0;
+S_0x125708700 .scope begin, "$ivl_for_loop1" "$ivl_for_loop1" 3 21, 3 21 0, S_0x125705110;
+ .timescale 0 0;
+v0x12570e8e0_0 .var/i "j", 31 0;
+    .scope S_0x125704fa0;
+T_0 ;
+    %wait E_0x125710f10;
+    %vpi_func 3 19 "$fopen" 32, "./Instruction_Memory.txt", "r" {0 0 0};
+    %store/vec4 v0x125721ba0_0, 0, 32;
+    %fork t_1, S_0x125705110;
+    %jmp t_0;
+    .scope S_0x125705110;
+t_1 ;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x125721a20_0, 0, 32;
+T_0.0 ;
+    %load/vec4 v0x125721a20_0;
+    %load/vec4 v0x125721d10_0;
+    %pad/u 32;
+    %cmp/u;
+    %flag_or 5, 4;
+    %jmp/0xz T_0.1, 5;
+    %fork t_3, S_0x125708700;
+    %jmp t_2;
+    .scope S_0x125708700;
+t_3 ;
+    %pushi/vec4 0, 0, 32;
+    %store/vec4 v0x12570e8e0_0, 0, 32;
+T_0.2 ;
+    %load/vec4 v0x12570e8e0_0;
+    %cmpi/s 16, 0, 32;
+    %jmp/0xz T_0.3, 5;
+    %vpi_func 3 22 "$fgetc" 32, v0x125721ba0_0 {0 0 0};
+    %subi 48, 0, 32;
+    %pad/s 8;
+    %store/vec4 v0x125721ae0_0, 0, 8;
+    %load/vec4 v0x125721ae0_0;
+    %parti/s 1, 0, 2;
+    %pushi/vec4 15, 0, 32;
+    %load/vec4 v0x12570e8e0_0;
+    %sub;
+    %ix/vec4/s 4;
+    %store/vec4 v0x125721dc0_0, 4, 1;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x12570e8e0_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %store/vec4 v0x12570e8e0_0, 0, 32;
+    %jmp T_0.2;
+T_0.3 ;
+    %end;
+    .scope S_0x125705110;
+t_2 %join;
+    ; show_stmt_assign_vector: Get l-value for compressed += operand
+    %load/vec4 v0x125721a20_0;
+    %pushi/vec4 1, 0, 32;
+    %add;
+    %store/vec4 v0x125721a20_0, 0, 32;
+    %jmp T_0.0;
+T_0.1 ;
+    %end;
+    .scope S_0x125704fa0;
+t_0 %join;
+    %vpi_call 3 26 "$fclose", v0x125721ba0_0 {0 0 0};
+    %jmp T_0;
+    .thread T_0, $push;
+    .scope S_0x12570ebe0;
+T_1 ;
+    %pushi/vec4 0, 0, 8;
+    %store/vec4 v0x125722280_0, 0, 8;
+    %end;
+    .thread T_1;
+    .scope S_0x12570ebe0;
+T_2 ;
+    %pushi/vec4 1, 0, 8;
+    %store/vec4 v0x125722190_0, 0, 8;
+    %end;
+    .thread T_2;
+    .scope S_0x12570ebe0;
+T_3 ;
+    %wait E_0x125706860;
+    %load/vec4 v0x1257225a0_0;
+    %flag_set/vec4 8;
+    %jmp/0xz  T_3.0, 8;
+    %load/vec4 v0x125721f70_0;
+    %parti/s 8, 0, 2;
+    %store/vec4 v0x125722280_0, 0, 8;
+    %jmp T_3.1;
+T_3.0 ;
+    %load/vec4 v0x125722280_0;
+    %load/vec4 v0x125722190_0;
+    %add;
+    %store/vec4 v0x125722280_0, 0, 8;
+T_3.1 ;
+    %jmp T_3;
+    .thread T_3;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "instruction_fetch.v";
+    "./instruction_memory.v";

@@ -20,15 +20,15 @@ wire[7:0] Address;
 wire[63:0] Value;
 wire[0:0] isLoad;
 wire[0:0] isMemWrite;
-wire[3:0] Reg_to_be_written;
+reg [3:0] Reg_to_be_written;
 wire[0:0] isWrite;
+reg [0:0] isWritetemp;
 
 assign Address[7:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[7:0]; //8 bits
 assign Value[63:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[71:8]; //64 bits
-assign Reg_to_be_written[3:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[75:72]; //4 bits
-assign isLoad[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[76:76]; // 1 bit
-assign isMemWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[77:77]; // 1 bit
-assign isWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[78:78]; // 1 bit
+assign isLoad[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[72:72]; // 1 bit
+assign isMemWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[73:73]; // 1 bit
+assign isWrite[0:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[74:74]; // 1 bit
 
 wire[63:0] DMoutput;
 reg[63:0] Temp_reg_for_wb_value;
@@ -36,6 +36,8 @@ reg[63:0] Temp_reg_for_wb_value;
 data_memory DM(.memaddress(Address),.inputdata(Value),.ismemwrite(isMemWrite),.outputdata(DMoutput));
 
 always @(posedge clk) begin
+    isWritetemp = isWrite;
+    Reg_to_be_written[3:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[78:75];
     if(isLoad[0:0]) begin
         Temp_reg_for_wb_value<=DMoutput;
     end 
@@ -46,7 +48,7 @@ end
 
 assign write[63:0]=Temp_reg_for_wb_value[63:0];
 assign write[67:64]=Reg_to_be_written[3:0];
-assign write[68:68]=isWrite[0:0];
+assign write[68:68]=isWritetemp;
 
 endmodule
 

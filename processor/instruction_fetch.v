@@ -25,10 +25,10 @@ module instruction_fetch(
 
     always @(posedge clk) begin
         if(is_Branch[0:0]) begin
-            Program_Counter<=Branch_Update_with_isBranch[7:0];
+            Program_Counter =Branch_Update_with_isBranch[7:0];
         end
         else begin
-            Program_Counter<=Program_Counter+Plus_4;
+            Program_Counter =Program_Counter+Plus_4;
         end
     end
     

@@ -12,37 +12,21 @@ module register_file (
 );
 
 
-reg [63:0] registers [15:0];              // 16 registers of 64 bit , Index[0 to 14] => General purpose registers , Index[15] => flag register
-
-// Initializing the value of the registers to be equal to 0
-initial registers[0] = 64'd0;
-initial registers[1] = 64'd0;
-initial registers[2] = 64'd0;
-initial registers[3] = 64'd0;
-initial registers[4] = 64'd0;
-initial registers[5] = 64'd0;
-initial registers[6] = 64'd0;
-initial registers[7] = 64'd0;
-initial registers[8] = 64'd0;
-initial registers[9] = 64'd0;
-initial registers[10] = 64'd0;
-initial registers[11] = 64'd0;
-initial registers[12] = 64'd0;
-initial registers[13] = 64'd0;
-initial registers[14] = 64'd0;
-initial registers[15] = 64'd0;
-
-
+reg [63:0] reg1_data_temp;
+reg [63:0] reg2_data_temp;
 // writing back to the register if is_write = 1
+
 always @(posedge clk) begin
+    reg1_data_temp = ifofexmawb.registers[reg1_read_address];
+    reg2_data_temp = ifofexmawb.registers[reg2_read_address];
     if (is_write) begin
-        registers[write_port_address] = write_data;
+        ifofexmawb.registers[write_port_address] = write_data;
     end
 end
 
 // Loading the outputs in the wires
-assign flag = registers[15][0:0];
-assign reg1_data = registers[reg1_read_address];
-assign reg2_data = registers[reg2_read_address];
+assign flag = ifofexmawb.registers[15][0:0];
+assign reg1_data = reg1_data_temp;
+assign reg2_data = reg2_data_temp;
 
 endmodule //register_file

@@ -1,5 +1,4 @@
 `include "control_unit.v"
-`include "register_file.v"
 
 module operand_fetch(
     input wire [23:0] IF_output,       
@@ -13,6 +12,8 @@ wire [9:0] Control_rod;
 wire [63:0] reg1_data;
 wire [63:0] reg2_data;
 wire [0:0] Flag;
+reg [9:0] Control_rod_reg;
+reg [23:0] IF_output_reg;
 reg [3:0] register_to_be_written;
 
 //   GIVING REDUNDENT DATA AS INPUT IN CASE OF REGISTER WRITE
@@ -36,24 +37,27 @@ assign is_write_wire = is_write;
 // Generating Control Signals
 control_unit cu (IF_output[11:8], Control_rod);
 // Invoking register file
-register_file reg_file (IF_output[15:12], IF_output[19:16], write_port_address_wire, write_data_wire, is_write_wire, clk, reg1_data, reg2_data, Flag);
+register_file rf(.reg1_read_address(IF_output[15:12]), .reg2_read_address(IF_output[19:16]), .clk(clk) , .reg1_data(reg1_data), .reg2_data(reg2_data), .flag(Flag));
 
 // MUX for the selection of write-back address
 always @(posedge clk) begin
+    Control_rod_reg = Control_rod;
+    IF_output_reg = IF_output;
     register_to_be_written = IF_output[15:12];
-    if ((Control_rod[0]|Control_rod[1]|Control_rod[2])&&!(Control_rod == 10'b1001000011)) begin
+    if ((Control_rod[0]|Control_rod[1]|Control_rod[2])&&!(IF_output[11:8] == 4'b0011)) begin
         register_to_be_written = IF_output[23:20];
     end
+    // $display("bleh: %b", IF_output);
 end
 
 // ASSIGNING OUTPUTS
-assign OF_output[7:0] = Control_rod[7:0];                   // Control Rod
-assign OF_output[15:8] = IF_output[7:0];                    // Program Counter
+assign OF_output[7:0] = Control_rod_reg [7:0];                   // Control Rod
+assign OF_output[15:8] = IF_output_reg[7:0];                    // Program Counter
 assign OF_output[79:16] = reg1_data;                        // Register-1 read data
 assign OF_output[143:80] = reg2_data;                       // Register-2 read data
 assign OF_output[144] = Flag;                               // Flag
-assign OF_output[152:145] = IF_output[23:16];               // Address in case of LW/SW instruction
+assign OF_output[152:145] = IF_output_reg[23:16];               // Address in case of LW/SW instruction
 assign OF_output[156:153] = register_to_be_written;         // Address of register to be written in write-back
-assign stalling_control_signal[1:0] = Control_rod[9:8];     // Control signal needed for Stalling
+assign stalling_control_signal[1:0] = Control_rod_reg [9:8];     // Control signal needed for Stalling
 
 endmodule
