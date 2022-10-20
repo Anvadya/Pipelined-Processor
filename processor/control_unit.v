@@ -65,18 +65,18 @@ endmodule
 
 // endmodule
 
-// OPCODES:
-// NOP : 1000
-// ADD : 0001
-// MUL : 0010
-// XOR : 0100
-// INC : 0011
-// CMP : 0110
-// BEQ : 1011
-// JMP : 1111
-// LD  : 1101
-// ST  : 1010
-// RES : 1100
+// OPCODES WITH STLLING SIGNALS:
+// NOP : 1000 00
+// ADD : 0001 11
+// MUL : 0010 11
+// XOR : 0100 11
+// INC : 0011 10
+// CMP : 0110 11
+// BEQ : 1011 10
+// JMP : 1111 00
+// LD  : 1101 00
+// ST  : 1010 10
+// RES : 1100 00
 
 // Control Rod (Bits):
 // 0-2 for ALU

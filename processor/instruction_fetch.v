@@ -7,7 +7,7 @@
 `include "instruction_memory.v"
 module instruction_fetch(
     input wire[8:0] Branch_Update_with_isBranch,  //Input received from Execution Unit [Main Wire for Input]
-
+    input wire data_stall,
     input wire clk,     //Clock wire
 
     output wire[23:0] IF_output //Main Output Wire
@@ -24,12 +24,22 @@ module instruction_fetch(
     assign is_Branch[0:0]=Branch_Update_with_isBranch[8:8];
 
     always @(posedge clk) begin
-        if(is_Branch[0:0]) begin
-            Program_Counter =Branch_Update_with_isBranch[7:0];
+        #1;
+        if (!data_stall) begin
+            if(is_Branch[0:0]) begin
+                // $display("The branch has been taken, instead of %b this %b has been taken",Program_Counter,Branch_Update_with_isBranch);
+                Program_Counter =Branch_Update_with_isBranch[7:0];
+            end
+            else begin
+                Program_Counter =Program_Counter+Plus_4;
+            end
         end
-        else begin
-            Program_Counter =Program_Counter+Plus_4;
-        end
+        // $display("The PC in IF stage is: %b", Program_Counter);
+    end
+
+    always @(negedge data_stall) begin
+        // Program_Counter = Program_Counter - 1;
+        // $display("T")
     end
     
     assign Address_Bus=Program_Counter;

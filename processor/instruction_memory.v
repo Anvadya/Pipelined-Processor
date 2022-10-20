@@ -16,6 +16,7 @@ module instruction_memory(pc,instruction); // Add clk (clock) when merging
     integer fd; // File handler
 
     always @(*) begin
+        // $display("PC from instruction memory: %b",pc);
         fd = $fopen("./Instruction_Memory.txt","r"); 
         for (integer i=0;i<=pc;i++) begin
             for (integer j=0;j<16;j++) begin

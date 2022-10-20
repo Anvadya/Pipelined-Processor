@@ -63,6 +63,9 @@ module alu(
     ismemwrite = control_signals_in[5];
     opcode [2:0] = control_signals_in[2:0];
     is_branch_taken = ((control_signals_in[3] & flag) | control_signals_in[7]) ;    control_signals_out [7:0] = control_signals_in[7:0];
+    if(is_branch_taken) begin
+      // $display("EX says branch lo");
+    end
     address_out [7:0] = address_in [7:0];
     reg_to_be_written_out [3:0] = reg_to_be_written_in [3:0];
     temp [8:0] = (PC [7:0] + address_in [7:0]);

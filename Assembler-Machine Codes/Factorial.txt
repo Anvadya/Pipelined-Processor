@@ -1,0 +1,10 @@
+LD R1,1
+RES R2
+RES R3
+INC R3
+pqr : CMP R1,R2
+BEQ abc
+INC R2
+MUL R3,R2,R3
+JMP pqr
+abc : ST R3,2
