@@ -239,7 +239,7 @@ end
 //<------Code for setting up and starting the simulation---------->
 initial begin
     $dumpfile("ifofexmawb.vcd"); //The name of the vcd file
-    $dumpvars(0,clk,control_stall,data_stall,of.OF_output,of.IF_output_reg,stalling_control_signal,prev_IfOf,OfEx,Branching,IfOf,inf.Program_Counter);
+    $dumpvars(0,clk);
     for (integer i=0;i<16;i++) $dumpvars(0,registers[i]);
     clk=0;
     for (integer i=0;i<900;i++) begin
@@ -249,3 +249,7 @@ end
 
 
 endmodule
+
+
+//Lines useful for debugging:
+    // $dumpvars(0,clk,control_stall,data_stall,of.OF_output,of.IF_output_reg,stalling_control_signal,prev_IfOf,OfEx,Branching,IfOf,inf.Program_Counter);
