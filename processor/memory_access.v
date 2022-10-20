@@ -3,7 +3,7 @@
 //Input : Address(7:0)[8 bits] and Value(71:8)[64 bits] ,RegAddressTobeWritten[4 bits], isLoad,isMemWrite,isWrite[next 3 bits] 
 //Output: Value after operation from MA unit[64 bits] and RegAddresstoBeWritten [next 4 bits]
 
-//Files required: Data Memory file
+//Child Module: data_memory.v
 
 //NOTE: The Data_Memory.txt must be consisting of total 256 lines
 
@@ -23,6 +23,8 @@ wire[0:0] isMemWrite;
 reg [3:0] Reg_to_be_written;
 wire[0:0] isWrite;
 reg [0:0] isWritetemp;
+
+//Breaking the elements of input wire into independent entities
 
 assign Address[7:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[7:0]; //8 bits
 assign Value[63:0]=Address_Value_RegAddress_isLoad_isMemWrite_isWrite[71:8]; //64 bits

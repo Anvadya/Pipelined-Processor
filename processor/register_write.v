@@ -1,9 +1,8 @@
 //This is the Register Write-Back Unit
 
 //Input : Value[64 bits],Register Address[next 4 bits], is_write[next 1 bit] {total 69 bits}, clk
-//Child Module: Register File
+//Child Module: register_file.v
 
-// `include "register_file.v"
 module register_write(
     input wire[68:0] reg_address_and_Value_with_is_write,
     input wire clk
