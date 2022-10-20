@@ -4,11 +4,12 @@
 `include "operand_fetch.v"
 `include "register_file.v"
 `include "alu.v"
+//We have included the required modules
 
+//-----------ISKa kuch kaam hai?
 module ifofexmawb();
 
 reg [63:0] registers [15:0];              // 16 registers of 64 bit , Index[0 to 14] => General purpose registers , Index[15] => flag register
-
 initial begin
     // Initializing the value of the registers to be equal to 0
     registers[0] = 64'd0;
@@ -29,17 +30,19 @@ initial begin
     registers[15] = 64'd0;
 end
 
+
+//Temporary wires to store the output from various modules(they are passed to the appropriate module)
 wire[78:0] Address_Value_RegAddress_isLoad_isMemWrite_isWrite;
 wire[68:0] reg_address_and_Value_with_is_write;
 wire[23:0] IF_output;
 wire[156:0] OF_output;
 reg [1:0] stalling_control_signal;
 reg clk=0;
-
 wire[8:0] Branch_Update_with_isBranch;
-
 reg[3:0] reg_address;
 
+
+//Initialising the various stages of the pipeline
 initial begin
     IfOf=24'b000000000000100000000000;
     OfEx=157'd0;
@@ -48,6 +51,7 @@ initial begin
 end
 
 
+//Creating the various modules of the pipeline
 instruction_fetch inf(
     .data_stall(data_stall),
     .clk(clk),
@@ -56,10 +60,10 @@ instruction_fetch inf(
 );
 
 reg[23:0] IfOf; // IF/OF Register
-
-always @(*) begin
-IfOf<=IF_output;
+    always @(*) begin
+    IfOf<=IF_output;
 end
+
 
 operand_fetch of(
     .clk(clk),
@@ -68,11 +72,11 @@ operand_fetch of(
     );
 
 reg[156:0] OfEx; // OF/EX Register
-
 always @(posedge clk) begin
-#0.5;
-OfEx<=OF_output;
+    #0.5; //The Delay was necessary to allow the value to be updated by OF before being used by EX
+    OfEx<=OF_output;
 end
+
 
 alu al(
     .clk(clk),
@@ -89,6 +93,7 @@ always @(posedge clk) begin
     Branching<=Branch_Update_with_isBranch;
 end
 
+
 memory_access ma(
     .clk(clk),
     .Address_Value_RegAddress_isLoad_isMemWrite_isWrite(ExMa),
@@ -96,29 +101,33 @@ memory_access ma(
 );
 
 reg[68:0] MaRw; // MA/WB Register
-
 always @(*) begin
-MaRw<=reg_address_and_Value_with_is_write;
+    MaRw<=reg_address_and_Value_with_is_write;
 end
+
 
 register_write rw(
     .clk(clk),
     .reg_address_and_Value_with_is_write(MaRw)
 );
 
+
+//<--------------Stalling Unit------------------->
+
+//Creating the registers required for the stalling unit
 reg data_stall;
 reg control_stall;
 reg [3:0] opcode;
 
-//Stalling Unit 
-
 always @(posedge clk) begin
-    // #0.5;
-    // OfEx = OF_output;
+    //Reseting the hazard signals at the begining of each new cycle
     control_stall=0;
     data_stall = 0;
     stalling_control_signal=0;
-    opcode = IfOf [11:8];
+
+    //Generating the signals required to determine whether a data hazard exists
+    opcode = IfOf [11:8]; //This is the opcode which will be processed by the OF in the current cycle
+
     if (!opcode[3]) begin
         stalling_control_signal[1]=1; 
         if(!(opcode[1]&opcode[0]))
@@ -128,6 +137,11 @@ always @(posedge clk) begin
         if (opcode[1])
             stalling_control_signal[1]=1; 
     end
+
+
+    //Determining whether a data hazard occurs
+
+    //Condition 1
     if (stalling_control_signal[1]==1) begin
         if (OfEx[6]==1 && OfEx[156:153]==IfOf[15:12]) begin
             data_stall = 1;
@@ -142,6 +156,8 @@ always @(posedge clk) begin
             $display("3");
         end
     end
+
+    //Condition 2
     if (stalling_control_signal[0]==1) begin
         if (OfEx[6]==1 && OfEx[156:153]==IfOf[19:16])  begin
             data_stall = 1;
@@ -156,6 +172,8 @@ always @(posedge clk) begin
             $display("6");
         end
     end
+
+    //Condition 3
     if(opcode == 4'b1011) begin
         if (OfEx[6]==1 && OfEx[156:153]==4'b1111)  begin
             data_stall = 1;
@@ -171,41 +189,30 @@ always @(posedge clk) begin
         end
     end
 
+
+    //Determining whether a control hazard occurs
     #2;
+    //Control hazard occurs if branching has to be done, this is the confition being checked below
     if(Branching[8]) begin
         control_stall = 1;
     end
-
-    // #2;
-    // if(Branching[8]) begin
-    //     OfEx = 157'b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000;
-    //     IfOf = 24'b000000000000100000001000;
-        
-    // end
 end
 
+
+//This is required for handling data haazards, as the same value of IF-OF register has to be provided again, 
+//hence the value is stored in a temporary register and looped back to IF-OF reg if a data hazard occurs
 reg [23:0] prev_IfOf;
 
+
+//We do updations at negative edge to avoid race conditions
 always @(negedge clk) begin
-    // if(!Branching[8]) begin
+    //Dealing with data stalls
     if(data_stall) begin
-        // Branching[8] = 1;
-        // Branching[7:0] = IfOf[7:0];
         IfOf = prev_IfOf;
         OfEx = 157'b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000;
-//dekh le syntax Tejas upar wale line ka, neeche wala ka bhi kr hi le; this should conclude data stalling
     end
-    // $display("if %b",IfOf);
 
-    //Starting control hazard stalling code
-    //I want this lower code to run after the upper code as control hazard condition will supercede the data hazard condition
-    // yaha yeh variable pr check lagana theek hai?
-    // if(Branch_Update_with_isBranch[8]) begin
-    //     OfEx = 157'b1111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000010000000;
-    //     IfOf = 24'b000000000000100000001000;
-    // end
-    //Solve the compile error,line 152 and 162
-    // end
+    //Dealing with control stalls
     if(control_stall) begin
         IfOf = 24'b000000000000100000000000;
         OfEx = 157'b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000;
@@ -213,21 +220,25 @@ always @(negedge clk) begin
     prev_IfOf = IfOf;
 end
 
-// always @(negedge data_stall) begin
-//     Branching[8]=1;
-//     Branching[7:0]=IfOf[7:0]+2;
-// end
-always @(posedge clk) begin
-$display("IF Output : %b",IfOf);
-$display("OF Output : %b",OfEx);
-$display("Ex Output : %b",ExMa);
-$display("Ma Output : %b",MaRw);
-// $display("PC Output : %b",Branching);
-    // $display(÷)
-end
 
+
+
+//Code which can be used for debugging
+// always @(posedge clk) begin
+// $display("IF Output : %b",IfOf);
+// $display("OF Output : %b",OfEx);
+// $display("Ex Output : %b",ExMa);
+// $display("Ma Output : %b",MaRw);
+// // $display("PC Output : %b",Branching);
+//     // $display(÷)
+// end
+
+
+
+
+//<------Code for setting up and starting the simulation---------->
 initial begin
-    $dumpfile("ifofexmawb.vcd");
+    $dumpfile("ifofexmawb.vcd"); //The name of the vcd file
     $dumpvars(0,clk,control_stall,data_stall,of.OF_output,of.IF_output_reg,stalling_control_signal,prev_IfOf,OfEx,Branching,IfOf,inf.Program_Counter);
     for (integer i=0;i<16;i++) $dumpvars(0,registers[i]);
     clk=0;
@@ -238,4 +249,3 @@ end
 
 
 endmodule
-//OF Output : 1111111111110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110000000
