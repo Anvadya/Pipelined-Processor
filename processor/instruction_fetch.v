@@ -2,7 +2,7 @@
 
 //Input: Branch_Update[first 8 bits], isBranch[last 1 bit] , clock wire
 //Output: IF_Output consisting of Address(7:0)[8 bits] and Data(23:8)[16 bits] for 24 bit output
-
+//Child Module: instruction_memory.v
 
 `include "instruction_memory.v"
 module instruction_fetch(
@@ -27,19 +27,12 @@ module instruction_fetch(
         #1;
         if (!data_stall) begin
             if(is_Branch[0:0]) begin
-                // $display("The branch has been taken, instead of %b this %b has been taken",Program_Counter,Branch_Update_with_isBranch);
                 Program_Counter =Branch_Update_with_isBranch[7:0];
             end
             else begin
                 Program_Counter =Program_Counter+Plus_4;
             end
         end
-        // $display("The PC in IF stage is: %b", Program_Counter);
-    end
-
-    always @(negedge data_stall) begin
-        // Program_Counter = Program_Counter - 1;
-        // $display("T")
     end
     
     assign Address_Bus=Program_Counter;
