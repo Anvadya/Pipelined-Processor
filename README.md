@@ -1,10 +1,5 @@
 # Pipelined-Processor
 <hr>
-1. About
-2. ISA
-3. Folder Structure
-4. Harek Unit
-5. How to use
 
 # About
 **Segzzee** is a Simulation of a 64 bit 5-staged Pipelined Microprocessor. 
@@ -37,6 +32,8 @@
 <hr>
 
 # Instruction Fetch Unit :
+* Contains the Instruction Memory.
+* Its function is to fetch the binary instruction (16 bits) from the instruction memory one after another.
 # Operand Fetch Unit : 
 ### Register File:
 * Contains the 16 registers of the processor 
@@ -45,8 +42,12 @@
 ### Control Unit : 
 * Its function is to generate the Control signal needed in the processor
 # Execution unit :
+* Responsible for all the main calculations such as calculations involving operands and calculating new address after branch instruction.
 # Memory access Unit :
+* Contains the Data Memory.
+* Its function is to handle Load Store operations by communicating with the Data memory.
 # Register Writeback Unit : 
+* Its function is to write the necessary data to the specified register of the Register file.
 
 <hr>
 
@@ -59,3 +60,12 @@
 * Paste the Path of the .txt file in the assembler and run the assembler this will generate a machine code (instructions) to be executed by the processor
 * Install `Icarus Verilog` and `Verilog HDL` extension in VS Code and run the testbench.v file and your output will be executed. 
 * The output of the memory can be seen in the `Data Memory.txt` 
+
+# Some Examples in **gtkwave** form :
+
+## Factorial of 19 :
+
+![Screenshot (315)](https://user-images.githubusercontent.com/99145719/197294710-aa561ae7-6cad-4855-a140-81a9a2f599ab.png)
+
+* Factorial(19)= 1B02B9306890000 (in Hexadecimal) = 121645100408832000 (in Decimal)
+* **NOTE**: In this 5-staged Pipelined Microprocessor we can accurately calculate upto 19 Factorial.
