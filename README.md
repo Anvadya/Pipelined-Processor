@@ -65,7 +65,17 @@
 
 ## Factorial of 19 :
 
+* Value stored in Register 3
+
 ![Screenshot (315)](https://user-images.githubusercontent.com/99145719/197294710-aa561ae7-6cad-4855-a140-81a9a2f599ab.png)
 
 * Factorial(19)= 1B02B9306890000 (in Hexadecimal) = 121645100408832000 (in Decimal)
 * **NOTE**: In this 5-staged Pipelined Microprocessor we can accurately calculate upto 19 Factorial.
+
+## Fibonacii of 19 :
+
+* Value stored in Register 3
+
+![Screenshot (317)](https://user-images.githubusercontent.com/99145719/197354559-391489bf-3fe4-44b6-b15e-2bbc46c2d43b.png)
+
+* Fibonacii of 19 = A18 (in Hexadecimal) = 2584 (in Decimal)
