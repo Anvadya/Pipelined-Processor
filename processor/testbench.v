@@ -6,7 +6,6 @@
 `include "alu.v"
 //We have included the required modules
 
-//-----------ISKa kuch kaam hai?
 module ifofexmawb();
 
 reg [63:0] registers [15:0];              // 16 registers of 64 bit , Index[0 to 14] => General purpose registers , Index[15] => flag register
